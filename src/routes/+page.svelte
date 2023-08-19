@@ -1,6 +1,7 @@
 <script lang="ts">
   import KeyDerivationWorker from "$lib/worker?worker";
   import {
+    Box,
     Button,
     Container,
     Flex,
@@ -133,7 +134,7 @@
   <Container>
     <HeadContent />
     <slot>
-      <Grid cols={24} align="flex-end">
+      <Grid cols={24} align="flex-end" override={{ pt: 30 }}>
         <Grid.Col span={20} override={{ minHeight: 80 }}>
           <Flex gap="xs" justify="center" align="flex-end">
             <InputWrapper
@@ -212,6 +213,17 @@
           />
         {/if}
       </Container>
+      <Box
+        css={{
+          align: "left",
+          borderRadius: "$md",
+          cursor: "pointer",
+
+          "&:hover": {
+            backgroundColor: "$gray100",
+          },
+        }}
+      />
     </slot>
   </Container>
 </SvelteUIProvider>
