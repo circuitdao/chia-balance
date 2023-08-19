@@ -22,7 +22,9 @@
     order={1}>Chia address balance</Title
   >
   <div class="corner">
-    <Anchor to="https://github.com/circuitdao/chia-balance">Contribute</Anchor>
+    <Anchor external={true} href="https://github.com/circuitdao/chia-balance"
+      >Contribute</Anchor
+    >
   </div>
 </SimpleGrid>
 
