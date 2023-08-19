@@ -131,13 +131,14 @@
       <InputWrapper
         id="pubkey"
         label="Your master public key"
-        description="Enter your public key and we'll derive observable addresses and fetch the balances for you. It takes a few seconds."
+        size="xl"
+        description="Enter your public key or an XCH address. Master public key derivations will be done in the browser. It should take max 1 minute."
       >
         <TextInput
           name="master_pubkey"
           bind:value={public_key}
           on:change={onPKChanged}
-          placeholder="insert your master public key, derivations will be done in the browser"
+          placeholder="insert your master public key or an xch address"
         />
       </InputWrapper>
       <Container size="md" override={{ px: "md" }}>
