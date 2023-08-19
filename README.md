@@ -7,6 +7,7 @@ Supported coins:
 
 
 # TODOs
+ - [ ] add CI/CD and other various Github actions 
  - [ ] improve design and error messages
  - [ ] add support for NFTs
  - [ ] add support for clawback
