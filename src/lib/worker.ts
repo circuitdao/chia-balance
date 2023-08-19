@@ -11,10 +11,13 @@ function calcPuzzleHashes(publicKeyText: string, rowCountLimit: Number): string[
   const puzzleHashes: Array<string> = [];
 
   const intermediate_unhardened = derivePublicKeyPath(publicKey, [12381, 8444, 2]);
-  const numberOfHashes = rowCountLimit === 0 ? 100 : 100;
-  for (let i = rowCountLimit; i < rowCountLimit + numberOfHashes; i++) {
-    if (i % 50 === 0)
-      self.postMessage({ numberOfHashes, count: i - rowCountLimit });
+  if (!rowCountLimit) {
+    rowCountLimit = 500 //default 
+  }
+  for (let i = 0; i < rowCountLimit; i++) {
+    if (i % 50 === 0) {
+      self.postMessage({ count: rowCountLimit, progress: i });
+    }
     const final_pk = derivePublicKeyPath(intermediate_unhardened, [i]);
     puzzleHashes.push(standardTransaction.curry([Program.fromJacobianPoint(calculateSyntheticPublicKey(final_pk, Program.deserializeHex("ff0980").hash()))]).hashHex());
 
@@ -35,10 +38,9 @@ self.onmessage = async ({ data: { publicKeyText, rowCountLimit } }) => {
     } else {
       try {
         const puzzleHashes = calcPuzzleHashes(publicKeyText, rowCountLimit);
-        self.postMessage({ numberOfHashes: puzzleHashes.length, count: puzzleHashes.length });
         self.postMessage({ puzzleHashes });
       } catch (e) {
-        self.postMessage({ puzzleHashes: [], error: "Invalid public key." });
+        self.postMessage({ error: "Invalid public key." });
       }
     }
   }

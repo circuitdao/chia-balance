@@ -1,8 +1,13 @@
 <script lang="ts">
+  import KeyDerivationWorker from "$lib/worker?worker";
   import {
+    Button,
     Container,
+    Flex,
+    Grid,
     InputWrapper,
     Loader,
+    NumberInput,
     Progress,
     Space,
     SvelteUIProvider,
@@ -11,14 +16,12 @@
     Title,
     Tooltip,
   } from "@svelteuidev/core";
-  import { onMount } from "svelte";
-  import { writable } from "svelte/store";
-  import KeyDerivationWorker from "$lib/worker?worker";
-  import HeadContent from "./HeadContent.svelte";
-  import { getSQLtoFetchXCH, getSQLtoFetchCATS } from "../lib/mojonode_sql";
-  import TAILS from "../lib/tails";
-  import bech32 from "../lib/bech32";
   import { toHex } from "chia-bls";
+  import { onMount } from "svelte";
+  import bech32 from "../lib/bech32";
+  import { getSQLtoFetchCATS, getSQLtoFetchXCH } from "../lib/mojonode_sql";
+  import TAILS from "../lib/tails";
+  import HeadContent from "./HeadContent.svelte";
   let worker: Worker;
 
   async function fetchBalance(puzzle_hashes: string[]) {
@@ -79,7 +82,7 @@
       const data = messageEvent.data;
       if (data.puzzleHashes) {
         if (data.error) {
-          error.set(data.error);
+          error = data.error;
         } else {
           fetching = true;
           balance = await fetchBalance(data.puzzleHashes);
@@ -87,22 +90,24 @@
           fetching = false;
         }
       }
-      if (data.numberOfHashes) {
-        progress = (data.count / data.numberOfHashes) * 100;
+      if (data.progress) {
+        progress = (data.progress / data.count) * 100;
       }
     };
   });
 
-  let error = writable([]);
+  let error = null;
   let puzzleHashes = [];
   let fetching = false;
   let progress = null;
   let balance = null;
   let public_key: string = "";
+  let derivations_count = 500;
 
   async function onPKChanged() {
     if (worker) progress = 0;
     console.log("pk changed", public_key);
+    balance = null;
     if (public_key.startsWith("xch")) {
       // puzzle hash
       fetching = true;
@@ -113,12 +118,12 @@
       console.log("Got back data", data);
       console.log("Puzhash", puzzle_hash);
       if (puzzle_hash) balance = await fetchBalance([puzzle_hash]);
-      else error.set("bad address");
+      else error = "Invalid XCH address";
     } else {
       // master public key
       worker.postMessage({
         publicKeyText: public_key,
-        rowCountLimit: 0,
+        rowCountLimit: derivations_count,
       });
     }
   }
@@ -127,22 +132,40 @@
 <SvelteUIProvider>
   <Container>
     <HeadContent />
-
     <slot>
-      <InputWrapper
-        id="pubkey"
-        label="Your master public key"
-        size="xl"
-        description="Enter your public key or an XCH address. Master public key derivations will be done in the browser. It should take max 1 minute."
-      >
-        <TextInput
-          name="master_pubkey"
-          bind:value={public_key}
-          on:change={onPKChanged}
-          placeholder="insert your master public key or an xch address"
-        />
-      </InputWrapper>
-      <Container size="md" override={{ px: "md" }}>
+      <Grid cols={24} align="flex-end">
+        <Grid.Col span={20} override={{ minHeight: 80 }}>
+          <Flex gap="xs" justify="center" align="flex-end">
+            <InputWrapper
+              id="pubkey"
+              required
+              label="Your master public key"
+              size="md"
+              {error}
+              description="Enter your public key or an XCH address. Master public key derivations will be done in the browser. It should take max 1 minute."
+            >
+              <TextInput
+                name="master_pubkey"
+                bind:value={public_key}
+                size="md"
+                on:change={onPKChanged}
+                placeholder="insert your master public key or an xch address"
+              />
+            </InputWrapper>
+            <Button on:click={onPKChanged} size="md">Go</Button>
+          </Flex>
+        </Grid.Col>
+        <Grid.Col span={4}>
+          <NumberInput
+            bind:value={derivations_count}
+            size="xs"
+            label="# of derivations"
+            hideControls
+            placeholder="Number of dervations"
+          />
+        </Grid.Col>
+      </Grid>
+      <Container size="xl" override={{ px: 0 }}>
         <Space h="xl" />
         {#if balance}
           <Title order={2}>XCH</Title>
@@ -180,13 +203,13 @@
           <Loader color="green" />
           <p>Fetching from Mojonode</p>
         {:else if progress}
-          <Container>
-            <Progress
-              size="xl"
-              label="Deriving addressess..."
-              value={progress}
-            />
-          </Container>
+          <Progress
+            striped
+            mt="xl"
+            size="xl"
+            label="Deriving addressess..."
+            value={progress}
+          />
         {/if}
       </Container>
     </slot>
