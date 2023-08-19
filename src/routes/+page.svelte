@@ -73,6 +73,7 @@
   }
 
   onMount(() => {
+    console.log("setting up worker");
     worker = new Worker(keyDerivationWorkerURL, { type: "module" });
     worker.onmessage = async (messageEvent) => {
       const data = messageEvent.data;
