@@ -13,7 +13,7 @@
   } from "@svelteuidev/core";
   import { onMount } from "svelte";
   import { writable } from "svelte/store";
-  import keyDerivationWorkerURL from "../lib/worker?url";
+  import KeyDerivationWorker from "$lib/worker?worker";
   import HeadContent from "./HeadContent.svelte";
   import { getSQLtoFetchXCH, getSQLtoFetchCATS } from "../lib/mojonode_sql";
   import TAILS from "../lib/tails";
@@ -74,7 +74,7 @@
 
   onMount(() => {
     console.log("setting up worker");
-    worker = new Worker(keyDerivationWorkerURL, { type: "module" });
+    worker = new KeyDerivationWorker({ type: "module" });
     worker.onmessage = async (messageEvent) => {
       const data = messageEvent.data;
       if (data.puzzleHashes) {
