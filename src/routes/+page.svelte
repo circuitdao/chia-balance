@@ -204,18 +204,22 @@
                   }}
                 >
                   {#each Object.entries(balance["CATs"]) as [tail, cat_balance]}
-                    <Group grow spacing="lg">
+                    <Group
+                      grow
+                      spacing="lg"
+                      override={{ borderBottom: "1px dashed #eee" }}
+                    >
                       <Tooltip label={cat_balance.tail_info.name}>
                         <Text
                           size="xl"
                           align="left"
-                          override={{ width: 100 }}
+                          override={{ width: 100, mt: 10 }}
                           color="blue">{cat_balance.tail_info.code}</Text
                         >
                       </Tooltip>
                       <Tooltip label="Unspent CAT coins: {cat_balance.coins}">
                         <Text size="xl" align="right"
-                          >{cat_balance.amount / 1000}</Text
+                          >{(cat_balance.amount / 1000).toFixed(1)}</Text
                         ></Tooltip
                       >
                     </Group>
