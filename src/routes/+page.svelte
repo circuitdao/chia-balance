@@ -19,7 +19,7 @@
     Tooltip,
     Group,
     Center,
-    MediaQuery,
+    Divider,
   } from "@svelteuidev/core";
   import { toHex } from "chia-bls";
   import { onMount } from "svelte";
@@ -89,6 +89,7 @@
     worker = new KeyDerivationWorker({ type: "module" });
     worker.onmessage = async (messageEvent) => {
       const data = messageEvent.data;
+      console.log("got message", data);
       if (data.puzzleHashes) {
         if (data.error) {
           error = data.error;
@@ -100,6 +101,7 @@
         }
       }
       if (data.progress) {
+        console.log("progress update");
         progress = (data.progress / data.count) * 100;
       }
     };
@@ -114,7 +116,7 @@
   let error = null;
   let puzzleHashes = [];
   let fetching = false;
-  let progress = null;
+  let progress: Number = null;
   let balance = null;
   let public_key: string = "";
   let derivations_count = 500;
@@ -211,7 +213,7 @@
                           color="blue">{cat_balance.tail_info.code}</Text
                         >
                       </Tooltip>
-                      <Tooltip label="Number of coins: {cat_balance.coins}">
+                      <Tooltip label="Unspent CAT coins: {cat_balance.coins}">
                         <Text size="xl" align="right"
                           >{cat_balance.amount / 1000}</Text
                         ></Tooltip
@@ -220,18 +222,20 @@
                   {/each}
                 </Box>
               </Card.Section>
+              <Divider />
+              <Text color="gray" size="xs"
+                >&ast; Mojonode only includes blocks that have enough
+                confirmations, so you might not see balance for coins you
+                received in last 20 blocks from peak.</Text
+              >
             </Card>
           {:else if fetching}
             <Loader color="green" />
-            <p>Fetching from Mojonode</p>
+            <Text size="md">Fetching from Mojonode</Text>
           {:else if progress}
-            <Progress
-              striped
-              mt="xl"
-              size="xl"
-              label="Deriving addressess..."
-              value={progress}
-            />
+            <Container override={{ width: "100%" }}>
+              <Progress striped mt="xl" size="xl" value={progress} />
+            </Container>
           {/if}
         </Center>
       </Container>
