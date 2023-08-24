@@ -11,11 +11,15 @@
     NumberInput,
     Progress,
     Space,
+    Card,
     SvelteUIProvider,
     Text,
     TextInput,
     Title,
     Tooltip,
+    Group,
+    Center,
+    MediaQuery,
   } from "@svelteuidev/core";
   import { toHex } from "chia-bls";
   import { onMount } from "svelte";
@@ -65,10 +69,14 @@
       CATs: {},
     };
     for (let i = 0; i < cat_balance.data.amount.length; i++) {
-      const tail_name = cat_balance.data.tail[i];
-      const tail_info = TAILS[tail_name];
+      let tail_name = cat_balance.data.tail[i];
+      if (!tail_name || tail_name === undefined) continue;
+      let tail_info = TAILS[tail_name];
+      if (!tail_info) {
+        tail_info = { code: truncate(tail_name), name: tail_name };
+      }
       balances["CATs"][tail_name] = {
-        amount: cat_balance.data.amount[i],
+        amount: cat_balance.data.amount[i].toFixed(1),
         coins: cat_balance.data.number_of_coins[i],
         tail_info: tail_info,
       };
@@ -96,6 +104,12 @@
       }
     };
   });
+  function truncate(str) {
+    return str.slice(0, 4) + "..." + str.slice(-4, -1);
+  }
+  const mobileWidth = {
+    width: "100%",
+  };
 
   let error = null;
   let puzzleHashes = [];
@@ -166,52 +180,60 @@
           />
         </Grid.Col>
       </Grid>
-      <Container size="xl" override={{ px: 0 }}>
-        <Space h="xl" />
-        {#if balance}
-          <Title order={2}>XCH</Title>
-          <Title order={3}>
-            Your balance is{" "}<br />
-            <Text color="blue" inherit component="span">
-              {balance["XCH"].amount / 1000000000000} XCH
-            </Text>
-          </Title>
-          <br /> <br />
-          <Title order={3}>
-            You have{" "}<br />
-            <Text color="blue" inherit component="span">
-              {balance["XCH"].coins} unspent coins.
-            </Text>
-          </Title>
-          <hr />
-
-          <Title order={2}>CATs</Title>
-          {#each Object.entries(balance["CATs"]) as [tail, cat_balance]}
-            <ul>
-              <li>
-                {#if cat_balance.tail_info}
-                  <Tooltip label={cat_balance.tail_info.name}>
-                    <Text color="blue">{cat_balance.tail_info.code}</Text>
-                  </Tooltip>
-                {:else}
-                  {tail}:
-                {/if}
-                {cat_balance.amount / 1000} (number of coins: {cat_balance.coins})
-              </li>
-            </ul>
-          {/each}
-        {:else if fetching}
-          <Loader color="green" />
-          <p>Fetching from Mojonode</p>
-        {:else if progress}
-          <Progress
-            striped
-            mt="xl"
-            size="xl"
-            label="Deriving addressess..."
-            value={progress}
-          />
-        {/if}
+      <Container size="xs" override={{ px: 10, mt: 50 }}>
+        <Center>
+          <Space h="xl" />
+          {#if balance}
+            <Card css={{ width: "100%" }} shadow="xl" padding="xl">
+              <Card.Section first>
+                <Space h="xl" />
+                <Title align="center" order={1}
+                  >{(balance["XCH"].amount / 1000000000000).toFixed(1)} XCH</Title
+                >
+                <Text align="center" size="xs"
+                  >{balance["XCH"].coins} unspent XCH coins</Text
+                >
+                <Box
+                  css={{
+                    textAlign: "center",
+                    padding: "$10",
+                    borderRadius: "$md",
+                    cursor: "pointer",
+                  }}
+                >
+                  {#each Object.entries(balance["CATs"]) as [tail, cat_balance]}
+                    <Group grow spacing="lg">
+                      <Tooltip label={cat_balance.tail_info.name}>
+                        <Text
+                          size="xl"
+                          align="left"
+                          override={{ width: 100 }}
+                          color="blue">{cat_balance.tail_info.code}</Text
+                        >
+                      </Tooltip>
+                      <Tooltip label="Number of coins: {cat_balance.coins}">
+                        <Text size="xl" align="right"
+                          >{cat_balance.amount / 1000}</Text
+                        ></Tooltip
+                      >
+                    </Group>
+                  {/each}
+                </Box>
+              </Card.Section>
+            </Card>
+          {:else if fetching}
+            <Loader color="green" />
+            <p>Fetching from Mojonode</p>
+          {:else if progress}
+            <Progress
+              striped
+              mt="xl"
+              size="xl"
+              label="Deriving addressess..."
+              value={progress}
+            />
+          {/if}
+        </Center>
       </Container>
       <Box
         css={{
