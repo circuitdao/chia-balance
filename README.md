@@ -1,12 +1,14 @@
 # Chia key balance 
 
 Find your balance for your public key (or specific address) - powered by [`Mojonode`](https://mojonode.com).
+
 Supported coins:
  - XCH 
  - CATs
 
 
 # TODOs
+ - [ ] add CI/CD and other various Github actions 
  - [ ] improve design and error messages
  - [ ] add support for NFTs
  - [ ] add support for clawback
