@@ -27,6 +27,7 @@ npm run dev
 # or start the server and open the app in a new browser tab
 npm run dev -- --open
 ```
+When ready, create a new pull request. Once it's merged to `main`, it's going to be automatically deployed. 
 
 ## Building
 
