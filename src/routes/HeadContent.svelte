@@ -37,7 +37,8 @@
 <Text color="gray" css={{ mt: 10 }}
   >A convenient way to check your wallet balance for CATs and XCH. Either if
   your wallet is struggling to sync, you suspect balance is not correct or just
-  want to quickly see if you got any airdrops.
+  want to quickly see if you got any airdrops. It also includes CAT tails for
+  all CATs in Tail Database.
 </Text>
 
 <Divider override={{ mb: 50 }} />

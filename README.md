@@ -1,5 +1,5 @@
 # Chia key balance 
-A convenient way to check your wallet balance for CATs and XCH. Either if your wallet is struggling to sync, you suspect balance is not correct or just want to quickly see if you got any airdrops.
+A convenient way to check your wallet balance for CATs and XCH. Either if your wallet is struggling to sync, you suspect balance is not correct or just want to quickly see if you got any airdrops. It also includes all CAT tails from Tail Database.
 Addresses are derived in the browser, so you don't lose any privacy. 
 
 Powered by [`Mojonode SQL`](https://mojonode.com/explorer). Part of [CircuitDAO](https://circuitdao.com) Community tools.
