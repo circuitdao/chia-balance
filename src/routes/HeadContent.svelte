@@ -1,14 +1,13 @@
 <script lang="ts">
   import {
     Anchor,
-    Button,
-    Container,
     Divider,
     Seo,
     SimpleGrid,
     Text,
     Title,
   } from "@svelteuidev/core";
+  import { GithubLogo } from "radix-icons-svelte";
 </script>
 
 <Seo
@@ -27,8 +26,11 @@
       >CircuitDAO</Anchor
     > community tools.
 
-    <Anchor external={true} href="https://github.com/circuitdao/chia-balance"
-      >Contribute</Anchor
+    <Anchor
+      color="black"
+      external={true}
+      href="https://github.com/circuitdao/chia-balance"
+      >Contribute <GithubLogo size="14" /></Anchor
     >
   </div>
 </SimpleGrid>
