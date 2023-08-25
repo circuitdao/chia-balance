@@ -1,6 +1,9 @@
 # Chia key balance 
+A convenient way to check your wallet balance for CATs and XCH. Either if your wallet is struggling to sync, you suspect balance is not correct or just want to quickly see if you got any airdrops.
+Addresses are derived in the browser, so you don't lose any privacy. 
 
-Find your balance for your public key (or specific address) - powered by [`Mojonode`](https://mojonode.com).
+Powered by [`Mojonode SQL`](https://mojonode.com/explorer). Part of [CircuitDAO](https://circuitdao.com) Community tools.
+
 
 Supported coins:
  - XCH 
@@ -8,6 +11,7 @@ Supported coins:
 
 
 # TODOs
+ - [ ] decent logo and favicon :) 
  - [ ] add CI/CD and other various Github actions 
  - [ ] improve design and error messages
  - [ ] add support for NFTs
@@ -38,6 +42,4 @@ npm run build
 ```
 
 You can preview the production build with `npm run preview`.
-
-
 

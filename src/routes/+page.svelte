@@ -20,6 +20,8 @@
     Group,
     Center,
     Divider,
+    Anchor,
+    Input,
   } from "@svelteuidev/core";
   import { toHex } from "chia-bls";
   import { onMount } from "svelte";
@@ -146,11 +148,11 @@
   }
 </script>
 
-<SvelteUIProvider>
+<SvelteUIProvider withNormalizeCSS withGlobalStyles>
   <Container>
     <HeadContent />
     <slot>
-      <Grid cols={24} align="flex-end" override={{ pt: 30 }}>
+      <Grid cols={24} align="flex-end">
         <Grid.Col span={20} override={{ minHeight: 80 }}>
           <Flex gap="xs" justify="center" align="flex-end">
             <InputWrapper
@@ -164,9 +166,9 @@
               <TextInput
                 name="master_pubkey"
                 bind:value={public_key}
-                size="md"
                 on:change={onPKChanged}
-                placeholder="insert your master public key or an xch address"
+                size="md"
+                placeholder="Insert your master public key or an xch address"
               />
             </InputWrapper>
             <Button on:click={onPKChanged} size="md">Go</Button>
@@ -243,17 +245,6 @@
           {/if}
         </Center>
       </Container>
-      <Box
-        css={{
-          align: "left",
-          borderRadius: "$md",
-          cursor: "pointer",
-
-          "&:hover": {
-            backgroundColor: "$gray100",
-          },
-        }}
-      />
     </slot>
   </Container>
 </SvelteUIProvider>
