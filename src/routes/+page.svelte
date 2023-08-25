@@ -16,12 +16,15 @@
     Text,
     TextInput,
     Title,
+    Image,
     Tooltip,
     Group,
     Center,
     Divider,
     Anchor,
     Input,
+    Badge,
+    Modal,
   } from "@svelteuidev/core";
   import { toHex } from "chia-bls";
   import { onMount } from "svelte";
@@ -122,7 +125,7 @@
   let balance = null;
   let public_key: string = "";
   let derivations_count = 500;
-
+  let helpOpened = false;
   async function onPKChanged() {
     if (worker) progress = 0;
     console.log("pk changed", public_key);
@@ -146,12 +149,48 @@
       });
     }
   }
+  function showModal() {
+    helpOpened = true;
+  }
 </script>
 
 <SvelteUIProvider withNormalizeCSS withGlobalStyles>
   <Container>
     <HeadContent />
     <slot>
+      <Modal
+        size="md"
+        opened={helpOpened}
+        on:close={() => (helpOpened = false)}
+        centered
+      >
+        <Title override={{ mb: 20 }} order={2}
+          >How to find master public key?</Title
+        >
+        <Text size="xl" align="center">1.</Text>
+        <Image
+          override={{ m: 5, border: "1px solid gray" }}
+          src={"./wallet_keys.png"}
+          caption="Start the wallet, if you don't see this list of keys, logout from your wallet first. Click on three dots and click on DETAILS."
+        />
+        <Space h="xl" />
+        <Space h="xl" />
+        <Text size="xl" align="center">2.</Text>
+        <Image
+          src={"./key_details.png"}
+          override={{ m: 5, border: "1px solid gray" }}
+          caption="Copy and paste the first value of the key"
+        />
+
+        <Title css={{ mt: 100, mb: 20 }} order={2}
+          >What to enter for number of derivations required?</Title
+        >
+        <Image
+          src={"./derivation_index.png"}
+          override={{ border: "1px solid gray" }}
+          caption="Open your wallet and select a key. A page with your balance and other info will show, find the number show in the screenshot. You need to enter at least this many into derivation input."
+        />
+      </Modal>
       <Grid cols={24} align="flex-end">
         <Grid.Col span={20} override={{ minHeight: 80 }}>
           <Flex gap="xs" justify="center" align="flex-end">
@@ -173,11 +212,20 @@
             </InputWrapper>
             <Button on:click={onPKChanged} size="md">Go</Button>
           </Flex>
+          <Badge
+            css={{ cursor: "pointer" }}
+            color="gray"
+            on:click={showModal}
+            size="xs"
+            >How to find master public key and number of derivations?</Badge
+          >
         </Grid.Col>
         <Grid.Col span={4}>
           <NumberInput
+            color="gray"
             bind:value={derivations_count}
-            size="xs"
+            override={{ mb: 20 }}
+            size="sm"
             label="# of derivations"
             hideControls
             placeholder="Number of dervations"
